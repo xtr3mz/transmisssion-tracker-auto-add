@@ -1,59 +1,40 @@
 #!/bin/sh
-# trackers.txt放到tmp，直接运行即可添加tracker
-auth=transmission_user:transmission_password
-host=localhost:9092
-tracker_url=https://raw.githubusercontent.com/ngosang/trackerslist/master/trackers_all.txt
-trackerslist=/tmp/trackers.txt
+# Get transmission credentials and ip or dns address
+# transmision-remote 放到 /usr/bin/，添加下行到/etc/crontab/root
+# * */1 * * * /bin/sh /mnt/mydisk/add_tracker.sh>>/mnt/mydisk/tracker.log
+# tracker.txt 放到同目录，每行一个地址
+# 文件保存编码 utf8
+tips="No active torrent"
+app=/usr/bin/transmission-remote
+auth=transmissionuser:transmissionpassword
+host=192.168.2.1:9091
+trackerslist=$(pwd)/trackers.txt
 
-update_trackers() {
-	for base_url in $tracker_url ; do
-		if [ ! -f $trackerslist ]; then
-			curl -o "$trackerslist" "${base_url}"
-		fi
-		Local=$(wc -c < $trackerslist)
-		Remote=$(curl -sI "${base_url}" | awk '/Content-Length/ {sub("\r",""); print $2}')
-		if [ "$Local" != "$Remote" ]; then
-			curl -o "$trackerslist" "${base_url}"
-		fi
-		echo "URL for ${base_url}"
-	done
-}
-
-add_trackers () {
+add_trackers() {
 	torrent_hash=$1
 	id=$2
-	echo "Adding trackers for $torrent_name..."
+	if [ -f $trackerslist ]; then
 	for tracker in $(cat $trackerslist) ; do
-		echo "${tracker}..."
-		if transmission-remote "$host"  --auth="$auth" --torrent "${torrent_hash}" -td "${tracker}" | grep -q 'success'; then
-		    echo ' failed.'
+		if $app "$host"  --auth="$auth" --torrent "${torrent_hash}" -td "${tracker}" | grep -q 'success'; then
+		    echo ' skiped.'
 		else
-		    echo ' done.'
+		    echo ' added .'
 		fi
+		echo "...${tracker}"
 	done
-	sleep 3m
-	rm -f "/tmp/TTAA.$id.lock"
+	else
+	    echo "trackers.txt lost"
+	fi
 }
 
 
-#while true ; do
-#sleep 25
-# Get list of active torrents
-    	ids="$(transmission-remote "$host"  --auth="$auth" --list | grep -vE 'Seeding|Stopped|Finished|[[:space:]]100%[[:space:]]' | grep '^ ' | awk '{ print $1 }')"
-	for id in $ids ; do
-	    #add_date="$(transmission-remote "$host" --auth="$auth" --torrent "$id" --info| grep '^  Date added: ' |cut -c 21-)"
-	    #add_date_t="$(date -d "$add_date" "+%Y-%m-%d %H:%M")"
-	    #dater="$(date "+%Y-%m-%d %H:%M")"
-	    #dateo="$(date -D '%s' -d "$(( `date +%s`+1*60 ))" "+%Y-%m-%d %H:%M")"
+ids="$($app "$host"  --auth="$auth" --list | grep -vE 'Seeding|Stopped|Finished|[[:space:]]100%[[:space:]]' | grep '^ ' | awk '{ print $1 }')"
+for id in $ids ; do
+	    hash="$($app "$host"  --auth="$auth" --torrent "$id" --info | grep '^  Hash: ' | awk '{ print $2 }')"
+	    torrent_name="$($app "$host"  --auth="$auth" --torrent "$id" --info | grep '^  Name: ' |cut -c 9-)"
+	    echo $(date "+%Y-%m-%d %H:%M:%S")" - Adding trackers for $torrent_name..."
 
-		#if [ ! -f "/tmp/TTAA.$id.lock" ]; then
-			#if [[ "( "$(add_date_t)" == "$(dater)" || "$(add_date_t)" == "$(dateo)" )" ]]; then
-			    hash="$(transmission-remote "$host"  --auth="$auth" --torrent "$id" --info | grep '^  Hash: ' | awk '{ print $2 }')"
-			    torrent_name="$(transmission-remote "$host"  --auth="$auth" --torrent "$id" --info | grep '^  Name: ' |cut -c 9-)"
-			    add_trackers "$hash" "$id" &
-			    touch "/tmp/TTAA.$id.lock"
-			#fi
-		#fi
-	done
-
-#done
+	    add_trackers "$hash" "$id"
+	    tips="done"
+done
+echo $tips
