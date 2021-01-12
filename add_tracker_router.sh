@@ -12,6 +12,8 @@ host=192.168.2.1:9091
 # tracker文件，每行一条
 trackerslist=$(pwd)/trackers.txt
 
+# 最重要的，此文件保存为utf8编码，权限0777
+
 add_trackers() {
 	torrent_hash=$1
 	id=$2
