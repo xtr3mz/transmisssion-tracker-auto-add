@@ -1,13 +1,15 @@
 #!/bin/sh
 # Get transmission credentials and ip or dns address
-# transmision-remote 放到 /usr/bin/，添加下行到/etc/crontab/root
-# * */1 * * * /bin/sh /mnt/mydisk/add_tracker.sh>>/mnt/mydisk/tracker.log
-# tracker.txt 放到同目录，每行一个地址
-# 文件保存编码 utf8
+# 定时任务
+# * */1 * * * sh /mnt/mydisk/add_tracker.sh>>/mnt/mydisk/tracker.log
 tips="No active torrent"
+# transmission-remote下载放到这里（上传的只有mt7621，其他cpu自己找）
 app=/usr/bin/transmission-remote
-auth=transmissionuser:transmissionpassword
+# 账号密码
+auth=transmission_user:password
+# 地址，端口
 host=192.168.2.1:9091
+# tracker文件，每行一条
 trackerslist=$(pwd)/trackers.txt
 
 add_trackers() {
