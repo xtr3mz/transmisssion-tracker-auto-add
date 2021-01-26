@@ -1,12 +1,12 @@
 打开add_tracker.sh，看注释
 
-用定时任务，自动给transmission添加tracker
+用定时任务/crontab，执行add_tracker.sh，自动给transmission添加tracker
 
-tracker.txt本地存放，随时修改
+tracker.txt本地存放，随时可以修改，路径在注释内
 
-路由器没有transmission-remote的，需要下载一个
+路由器没有transmission-remote的，需要下载一个（已上传mt7621的）
 
-下面是原项目介绍（带自动下载tracker）
+下面是原项目介绍
 
 # Get more trackers, get more seeders,  get more peers transmission [![](https://images.microbadger.com/badges/version/andrewmhub/transmission-tracker-add.svg)](https://microbadger.com/images/andrewmhub/transmission-tracker-add) ![Docker Pulls](https://img.shields.io/docker/pulls/andrewmhub/transmission-tracker-add.svg) ![GitHub top language](https://img.shields.io/github/languages/top/AndrewMarchukov/tracker-add.svg)
 See no peers,seeds for some torrent(s)? Add more tracker(s) for Transmission
