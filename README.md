@@ -1,6 +1,8 @@
-打开add_tracker_router.sh，看注释
+打开router/addtracker.sh，看文件内注释
 
-用定时任务/crontab，执行add_tracker_router.sh，自动给transmission添加tracker
+下载后，放到你的/mnt/mydisk/内
+
+用定时任务/crontab，执行addtracker.sh，自动给transmission添加tracker
 
 tracker.txt本地存放，随时可以修改，路径在注释内
 
