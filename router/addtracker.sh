@@ -1,6 +1,6 @@
 #!/bin/sh
 # transmission 自动添加tracker 保存为utf8编码 权限0777
-# * */1 * * * /mnt/mydisk/add_tracker.sh>/mnt/mydisk/tracker.log
+# * */1 * * * /mnt/mydisk/addtracker.sh>/mnt/mydisk/tracker.log
 
 tips="No active torrent"
 app=/usr/bin/transmission-remote
@@ -8,9 +8,9 @@ app=/usr/bin/transmission-remote
 apx=/mnt/mydisk/transmission-remote
 #账号:密码
 auth=transmission:transmission
-#host和 端口
+#hostip 和 端口 不要写127.0.0.1
 host=192.168.2.1:9091
-#存放trakcer的文件
+#存放trakcer的文件 每行一条地址
 trackerslist=/mnt/mydisk/trackers.txt
 
 add_trackers() {
