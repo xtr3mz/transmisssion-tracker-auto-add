@@ -2,7 +2,9 @@
 
 用定时任务，自动给transmission添加tracker
 
-tracker本地存放，随时修改
+tracker.txt本地存放，随时修改
+
+路由器没有transmission-remote的，需要下载一个
 
 下面是原项目介绍（带自动下载tracker）
 
